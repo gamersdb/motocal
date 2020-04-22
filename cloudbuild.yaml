@@ -11,6 +11,8 @@ steps:
      # build the container image
      - name: 'gcr.io/cloud-builders/docker'
        args: ['build', '-f', 'Dockerfile.nginx', '-t', 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA', '.']
+       images:
+         - 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA'
      # push the container image to Container Registry
      - name: 'gcr.io/cloud-builders/docker'
        args: ['push', 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA']
@@ -26,5 +28,3 @@ steps:
          - 'us-central1'
          - '--platform'
          - 'managed'
-     images:
-       - 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA'
