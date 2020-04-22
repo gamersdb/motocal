@@ -5,6 +5,9 @@ steps:
      - name: 'node:8'
        entrypoint: npm
        args: ['run', 'production-build']
+     # build the container image
+     - name: 'gcr.io/cloud-builders/docker'
+       args: ['build', '-f', 'Dockerfile.nginx', '-t', 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA', '.']
      # push the container image to Container Registry
      - name: 'gcr.io/cloud-builders/docker'
        args: ['push', 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA']
