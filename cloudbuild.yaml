@@ -6,7 +6,8 @@ steps:
        entrypoint: npm
        args: ['run', 'production-build']
      - name: 'gcr.io/cloud-builders/docker'
-       entrypoint: ls
+       entrypoint: rm
+       args: ['.dockerignore']
      # build the container image
      - name: 'gcr.io/cloud-builders/docker'
        args: ['build', '-f', 'Dockerfile.nginx', '-t', 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA', '.']
