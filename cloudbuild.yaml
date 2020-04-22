@@ -5,6 +5,8 @@ steps:
      - name: 'node:8'
        entrypoint: npm
        args: ['run', 'production-build']
+     - name: 'gcr.io/cloud-builders/docker'
+       entrypoint: ls
      # build the container image
      - name: 'gcr.io/cloud-builders/docker'
        args: ['build', '-f', 'Dockerfile.nginx', '-t', 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA', '.']
