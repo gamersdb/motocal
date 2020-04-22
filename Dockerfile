@@ -7,3 +7,5 @@ RUN npm install npm@latest -g && \
     npm install -g npm-check-updates && \
     npm install
 COPY . .
+
+CMD ["npm", "run", "start"]
