@@ -1,28 +1,42 @@
 steps:
-     - name: 'node:8'
-       entrypoint: npm
-       args: ['install']
-     - name: 'node:8'
-       entrypoint: npm
-       args: ['run', 'production-build']
-     - name: 'gcr.io/cloud-builders/docker'
-       entrypoint: rm
-       args: ['.dockerignore']
-     # build the container image
-     - name: 'gcr.io/cloud-builders/docker'
-       args: ['build', '-f', 'Dockerfile.nginx', '-t', 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA', '.']
-     # push the container image to Container Registry
-     - name: 'gcr.io/cloud-builders/docker'
-       args: ['push', 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA']
-     # Deploy container image to Cloud Run
-     - name: 'gcr.io/cloud-builders/gcloud'
-       args:
-         - 'run'
-         - 'deploy'
-         - 'motocal'
-         - '--image'
-         - 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA'
-         - '--region'
-         - 'us-central1'
-         - '--platform'
-         - 'managed'
+  - name: 'gcr.io/cloud-builders/gsutil'
+    entrypoint: sh
+    args: ['load_images.sh']
+  - name: 'debian:10'
+    args: ['tar', 'zxfv', 'imgs.tgz']
+  - name: 'python:3'
+    args: ['python', 'scripts/download_image.py', 'arm', '--site', 'wiki']
+  - name: 'debian:10'
+    args: ['tar', 'zcvf', 'imgs.tgz', 'imgs']
+  - name: 'debian:10'
+    args: ['tar', 'zxfv', 'charaimgs.tgz']
+  - name: 'python:3'
+    args: ['python', 'scripts/download_image.py', 'chara', '--site', 'wiki']
+  - name: 'debian:10'
+    args: ['tar', 'zcvf', 'charaimgs.tgz', 'charaimgs']
+  - name: 'gcr.io/cloud-builders/gsutil'
+    entrypoint: sh
+    args: ['save_images.sh']
+  - name: 'node:8'
+    entrypoint: npm
+    args: ['install']
+  - name: 'node:8'
+    entrypoint: npm
+    args: ['run', 'production-build']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'Dockerfile.nginx', '-t', 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA']
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'motocal'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+images:
+  - 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA'
