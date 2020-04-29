@@ -23,6 +23,8 @@ steps:
   - name: 'node:8'
     entrypoint: npm
     args: ['run', 'production-build']
+  - name: 'debian:10'
+    args: ['ls', '-al']
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-f', 'Dockerfile.nginx', '-t', 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA', '.']
   - name: 'gcr.io/cloud-builders/docker'
