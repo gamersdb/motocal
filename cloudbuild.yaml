@@ -25,7 +25,7 @@ steps:
     args: ['run', 'production-build']
   - name: 'debian:10'
     args: ['pwd']
-  - name: 'debian:10'
+  - name: 'gcr.io/cloud-builders/docker'
     args: ['ls', '-al']
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-f', 'Dockerfile.nginx', '-t', 'gcr.io/$PROJECT_ID/motocal:$COMMIT_SHA', '.']
